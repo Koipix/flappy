@@ -6,16 +6,34 @@ public class GameOverOnCollision : MonoBehaviour
 {
     public Text gameOverText; // Assign your Game Over Text object in the Inspector
 
+    private PlayerScript playerScript; // Store the PlayerScript reference
+
     private void Start()
     {
         // Initially hide the Game Over text
         if (gameOverText != null)
         {
-            gameOverText.gameObject.SetActive(false); // or gameOverText.enabled = false;
+            gameOverText.gameObject.SetActive(false);
         }
         else
         {
             Debug.LogError("Game Over Text not assigned in GameOverOnCollision script!");
+        }
+
+        // Find the PlayerScript in the scene (using GetComponent on the Player)
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+        if (playerObject != null)
+        {
+            playerScript = playerObject.GetComponent<PlayerScript>();
+        }
+        else
+        {
+            Debug.LogError("Player GameObject with tag 'Player' not found in the scene!");
+        }
+
+        if (playerScript == null)
+        {
+            Debug.LogError("PlayerScript component not found on the Player GameObject!");
         }
     }
 
@@ -23,40 +41,33 @@ public class GameOverOnCollision : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            HandleGameOver(other.gameObject); // Call the common game over function
+            HandleGameOver(); // No need to pass the GameObject anymore
         }
     }
 
-    //For more precise collision detection, use OnCollisionEnter2D
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            HandleGameOver(collision.gameObject); // Call the common game over function
+            HandleGameOver(); // No need to pass the GameObject anymore
         }
     }
 
-    private void HandleGameOver(GameObject player) // Takes the player GameObject as a parameter
+    private void HandleGameOver() // No parameter needed
     {
         Debug.Log("Game Over!");
 
-        // 1. Show the Game Over Text
         if (gameOverText != null)
         {
-            gameOverText.gameObject.SetActive(true); // or gameOverText.enabled = true;
+            gameOverText.gameObject.SetActive(true);
         }
 
-        // 2. Disable Player Control
-        PlayerScript playerScript = player.GetComponent<PlayerScript>();
-        if (playerScript != null)
+        if (playerScript != null) // Check if playerScript was found
         {
             playerScript.enabled = false;
         }
 
-        // 3. (Optional) Pause the game
-        // Time.timeScale = 0; // Freezes the game
-
-        // 4. (Optional) Add a restart button or other game over logic
+        // Time.timeScale = 0; // Optional: Pause the game
     }
 
     private void Update() // Check for 'R' key press even if game over hasn't happened yet.
@@ -69,14 +80,13 @@ public class GameOverOnCollision : MonoBehaviour
 
     private void ResetGame()
     {
-        // Reload the current scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        // Or if you want to load a specific scene:
-        // SceneManager.LoadScene("Level1"); // Replace with your scene name.
-
-        // If you had Time.timeScale = 0; in HandleGameOver(), reset it here:
         Time.timeScale = 1;
 
-        // If you had any other reset logic (e.g., re-enabling other scripts), put it here.
+        // Re-enable PlayerScript (if you paused the game)
+        if (playerScript != null)
+        {
+            playerScript.enabled = true;
+        }
     }
 }

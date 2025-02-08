@@ -5,7 +5,7 @@ public class PipeSpawn : MonoBehaviour
     public GameObject pipe;
     public DifficultySO difficulty; // Assign your DifficultySO in the Inspector
     private float timer = 0;
-   
+
     void Start()
     {
         pipe = Resources.Load<GameObject>("Pipe");
@@ -17,8 +17,8 @@ public class PipeSpawn : MonoBehaviour
     {
         //if (timer < difficulty.spawnRate) {
         //    timer += Time.deltaTime;
-        //} 
-        //else 
+        //}
+        //else
         //{
         //    SpawnPipe();
         //    timer = 0;
@@ -52,4 +52,3 @@ public class PipeSpawn : MonoBehaviour
         }
     }
 }
-

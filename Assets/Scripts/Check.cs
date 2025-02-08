@@ -5,53 +5,41 @@ public class Check : MonoBehaviour
     public int scoreToAdd = 1; // Make this public to adjust in the Inspector
     private bool collected = false; // Track if the object has been collected
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private PlayerScript player; // Store the PlayerScript reference
+
+    void Start()
     {
-        if (other.CompareTag("Player") && !collected) // Check tag and if not already collected
+        // Find the Player GameObject and get the PlayerScript component
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+
+        if (player == null)
         {
-            collected = true; // Prevent multiple collections
-
-            // Get the PlayerScript and add the score
-            PlayerScript player = other.GetComponent<PlayerScript>();
-            if (player != null)
-            {
-                player.score += scoreToAdd;
-                player.UpdateScoreUI(); // Update the score UI
-
-                // Destroy the "Check" object (optional)
-                //Destroy(gameObject);
-
-                // Or, disable the "Check" object instead of destroying it
-                // gameObject.SetActive(false); 
-
-                // You can also play a sound effect or other visual feedback here.
-                Debug.Log("Check object collected!");
-            }
-            else
-            {
-                Debug.LogError("PlayerScript not found on the player object!");
-            }
+            Debug.LogError("Player GameObject with tag 'Player' not found, or PlayerScript is missing!");
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && !collected && player != null) // Check player is found
+        {
+            Collect();
+        }
+    }
+
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !collected)
+        if (collision.gameObject.CompareTag("Player") && !collected && player != null) // Check player is found
         {
-            collected = true;
-
-            PlayerScript player = collision.gameObject.GetComponent<PlayerScript>();
-            if (player != null)
-            {
-                player.score += scoreToAdd;
-                player.UpdateScoreUI();
-                //Destroy(gameObject);
-                Debug.Log("Check object collected!");
-            }
-            else
-            {
-                Debug.LogError("PlayerScript not found on the player object!");
-            }
+            Collect();
         }
+    }
+    private void Collect()
+    {
+        collected = true;
+        player.score += scoreToAdd;
+        player.UpdateScoreUI();
+        //Destroy(gameObject); // Or gameObject.SetActive(false);
+        Debug.Log("Check object collected!");
     }
 }

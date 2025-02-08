@@ -62,6 +62,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DifficultySO.cs" />
+<<<<<<< HEAD
+=======
+    <Compile Include="Assets\Scripts\CharacterSelect.cs" />
+>>>>>>> e54843863657a1348afa0401051252ddbe8621c3
     <Compile Include="Assets\Scripts\Check.cs" />
     <Compile Include="Assets\Scripts\PipeDestroy.cs" />
     <Compile Include="Assets\Scripts\GameOverCollission.cs" />
